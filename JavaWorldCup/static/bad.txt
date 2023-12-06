@@ -1,0 +1,10 @@
+foul
+handball
+own goal
+penalty
+tackle
+dive
+red card
+yellow card
+caution
+charging

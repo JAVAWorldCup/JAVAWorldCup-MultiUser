@@ -1,0 +1,10 @@
+lee
+2
+park
+3
+ji
+5
+won
+10
+java
+2

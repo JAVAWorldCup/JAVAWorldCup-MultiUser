@@ -1,0 +1,18 @@
+kick
+goal
+offside
+onside
+dash
+assist
+box
+hel
+
+hel
+helo
+helo
+hello
+hello
+hello
+Java is fun!
+black
+gyudong

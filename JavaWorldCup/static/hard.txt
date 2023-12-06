@@ -1,0 +1,12 @@
+lee
+5
+park
+10
+ji
+13
+won
+5
+java
+3
+gyudong
+17
