@@ -30,10 +30,6 @@ public class TimerPanel extends JPanel {
 		synchronized public void resumeThread() {
 			flag = false;
 			this.notify();
-			if(count >= 45) { // 후반전
-				state.setLocation(10, 170);
-				state.setText("Second-Half");
-			}
 		}
 		synchronized public void waitFlag() {
 			try {
@@ -50,9 +46,9 @@ public class TimerPanel extends JPanel {
 						waitFlag();
 					count++; 
 					timer.setText(Integer.toString(count) + " Min");
-					if(count == 45) { // 하프타임
-						state.setText("Half-time");
-					}
+//					if(count == 45) { // 하프타임
+//						state.setText("Half-time");
+//					}
 					// 난이도에 따라 상대 골 찬스 시간이 달라짐
 					if(level == 0) { //easy
 						if(count % 30 == 0)

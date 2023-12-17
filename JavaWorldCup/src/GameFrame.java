@@ -200,12 +200,6 @@ public class GameFrame extends JFrame{
 						scorePanel.setScore();
 						showGamePanel();
 					}
-					// half time: Thread stop
-					if(timerPanel.getCount() == 45) {
-						timerPanel.tgt.stopFlag();
-						gamePanel.groundPanel.wt.stopFlag();
-						scorePanel.pauseGame();
-					}
 					// 경기 종료
 					if(timerPanel.getCount() == 90) {
 						timerPanel.tgt.stopFlag();

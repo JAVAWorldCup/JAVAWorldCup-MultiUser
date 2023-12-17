@@ -36,7 +36,7 @@ public class VersusFrame extends JFrame {
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			// 이미지 그릭;ㅣ
+			// 이미지 그리기
 			g.drawImage(backGroundImg, 0, 0, this.getWidth(), this.getHeight(), null);
 			g.drawImage(koreaImg, 30, 90, 300, 200, null);
 			g.drawImage(japanImg, 470, 310, 300, 200, null);
