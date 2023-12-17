@@ -175,17 +175,17 @@ public class StartFrame extends JFrame{
 				try {
 					sleep(100);
 					if(start == false) { // 처음 게임을 시작했을 때
-						vf = new VersusFrame(round); // 8강전, 4강전, 결승 대진표 표기
+//						vf = new VersusFrame(round); // 8강전, 4강전, 결승 대진표 표기
 						setVisible(false);
 						sleep(2000);
-						gf = new GameFrame(round, level);
+						gf = new GameFrame(round, level, "");
 						vf.setVisible(false);
 						start = true; // 게임을 시작했으니 true로 변경
 					}
 					if(gf.getGameState() == true) { // 경기 끝남
 						if(gf.getGoalState()) { // 경기를 이겼을 때
 							totalGoals += gf.getMyGoal(); // 해당 Stage에서 넣은 골 추가
-							rf = new ResultFrame(true); // 결과 화면
+//							rf = new ResultFrame(true); // 결과 화면
 							gf.setVisible(false); // gameFrame 숨기기
 							gf.stopAudio(); // gameFrame 배경음악 끄기
 							sleep(2000); 
@@ -200,15 +200,15 @@ public class StartFrame extends JFrame{
 								interrupt(); // 스레드 종료
 							}
 							else {  // 4강전, 결승전일 경우
-								vf = new VersusFrame(round);
+//								vf = new VersusFrame(round);
 								sleep(2000);
-								gf = new GameFrame(round, level);
+								gf = new GameFrame(round, level, "");
 								gf.setVisible(true);
 								vf.setVisible(false);
 							}
 						}
 						else { // 경기 졌을 때
-							rf = new ResultFrame(false);
+//							rf = new ResultFrame(false);
 							gf.setVisible(false);
 							gf.stopAudio();
 							sleep(2000);

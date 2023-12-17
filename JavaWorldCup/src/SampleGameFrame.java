@@ -45,10 +45,10 @@ public class SampleGameFrame extends JFrame {
 	private JButton startAndReadyBtn;
 	private HashMap<String, String> countryImgMap = new HashMap<String, String>(){{
 		put ("-", "./images/blankCountry.png");
-		put ("한국", "./images/korea.png");
-		put ("브라질", "./images/brazil.png");
-		put ("프랑스", "./images/newFrance.png");
-		put ("일본", "./images/japan.png");
+		put ("Korea", "./images/korea.png");
+		put ("Brazil", "./images/brazil.png");
+		put ("France", "./images/newFrance.png");
+		put ("Japan", "./images/japan.png");
 	}};
 	public SampleGameFrame(Room room, Player newPlayer, int userNum) {
 		this.room = room;
@@ -267,7 +267,13 @@ public class SampleGameFrame extends JFrame {
 				        		player2ReadyLabel.setText("");
 				        }
 				        else if(msgToken[0].equals("gameStart") && Integer.parseInt(msgToken[1])==room.getRoomNumber()) {
-							new StartFrame();
+//							new GameFrame(8, 1, room.getPlayer(userNum).getName());
+				        	MainThread mt;
+				        	if(room.getMasterNum()==userNum)
+				        		mt = new MainThread(room.getPlayer(1).getName(), room.getPlayer(1).getCountry(), room.getPlayer(2).getName(), room.getPlayer(2).getCountry());
+				    		else
+				    			mt = new MainThread(room.getPlayer(2).getName(), room.getPlayer(2).getCountry(), room.getPlayer(1).getName(), room.getPlayer(1).getCountry());
+				        	mt.start();
 							dispose();
 				        }
 					} catch (Exception e) {

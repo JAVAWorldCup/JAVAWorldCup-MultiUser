@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 public class TimerPanel extends JPanel {
 	private JLabel timer = new JLabel("0 Min");
-	private JLabel state = new JLabel("First-Half");
+	private JLabel state;
 	private int count = 0;
 	private int round;
 	private int level;
@@ -50,16 +50,16 @@ public class TimerPanel extends JPanel {
 //						state.setText("Half-time");
 //					}
 					// 난이도에 따라 상대 골 찬스 시간이 달라짐
-					if(level == 0) { //easy
-						if(count % 30 == 0)
-							opponentGoal();
-					}else if(level == 1) { //normal
-						if(count % 15 == 0)
-							opponentGoal();
-					}else if(level == 2) { // hard
-						if(count % 10 == 0)
-							opponentGoal();
-					}
+//					if(level == 0) { //easy
+//						if(count % 30 == 0)
+//							opponentGoal();
+//					}else if(level == 1) { //normal
+//						if(count % 15 == 0)
+//							opponentGoal();
+//					}else if(level == 2) { // hard
+//						if(count % 10 == 0)
+//							opponentGoal();
+//					}
 					
 					if(count == 90) {	// 0초 되면 종료
 						state.setLocation(20, 170);
@@ -73,7 +73,7 @@ public class TimerPanel extends JPanel {
 		}
 	}
 	
-	public TimerPanel(ScorePanel scorePanel, int round, int level) {
+	public TimerPanel(ScorePanel scorePanel, int round, int level, String name) {
 		sp = scorePanel;
 		this.round = round;
 		this.level = level;
@@ -85,7 +85,7 @@ public class TimerPanel extends JPanel {
 		timer.setSize(200, 50);
 		add(timer);
 		
-		
+		state = new JLabel(name);
 		state.setFont(new Font("Abalone Smile", Font.BOLD, 35));
 		state.setForeground(Color.WHITE);
 		state.setLocation(25, 170);

@@ -4,6 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -19,6 +26,7 @@ public class GameFrame extends JFrame{
 	private boolean gameState = false; // true면 게임 종료
 	private int round = 8;
 	private int level;
+	private String name;
 	
 	private JButton startBtn = new JButton("start");
 	private JButton pauseBtn = new JButton("pause");
@@ -33,11 +41,19 @@ public class GameFrame extends JFrame{
 	private ShootingPanel shootingPanel = new ShootingPanel(scorePanel,round);
 	private TimerPanel timerPanel;
 	private GamePanel gamePanel;
+	private Socket socket; // 연결소켓
+	private InputStream is;
+	private OutputStream os;
+	private DataInputStream dis;
+	private DataOutputStream dos;
+	private InetAddress ip;
+	final static int ServerPort = 5019;
 	
-	public GameFrame(int round, int level) {
-		super("2022 JAVA World Cup");
+	public GameFrame(int round, int level, String name) {
+		super(name + ": 2022 JAVA World Cup");
 		this.round = round;
 		this.level = level;
+		this.name = name;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 		makeToolBar();
@@ -49,6 +65,22 @@ public class GameFrame extends JFrame{
 		
 		setSize(800,630);
 		setVisible(true);
+		
+		try {
+			ip = InetAddress.getByName("localhost");
+            socket = new Socket(ip, ServerPort);
+            is = socket.getInputStream();
+            dis = new DataInputStream(is);
+            os = socket.getOutputStream();
+            dos = new DataOutputStream(os);
+            
+            SendMessage(name);
+            ListenNetwork net = new ListenNetwork();
+            net.start();
+        } catch (NumberFormatException | IOException e) {
+            e.printStackTrace();
+            System.out.println("Socket Not Connected");
+        }
 	}
 	
 	public boolean getGameState() { return gameState; } 
@@ -88,39 +120,39 @@ public class GameFrame extends JFrame{
 		Font btnFont = new Font("Abalone Smile", Font.PLAIN, 20);
 		
 		//startBtn(게임 스타트)
-		startBtn.setFont(btnFont);
-		startBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				timerPanel.tgt.resumeThread();
-				gamePanel.groundPanel.wt.resumeThread();
-				scorePanel.restartGame();
-			}
-		});
-		tBar.add(startBtn);
-		
-		//pauseBtn(게임 중단)
-		pauseBtn.setFont(btnFont);
-		pauseBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				timerPanel.tgt.stopFlag();
-				gamePanel.groundPanel.wt.stopFlag();
-				scorePanel.pauseGame();
-			}
-		});
-		tBar.add(pauseBtn);
+//		startBtn.setFont(btnFont);
+//		startBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				timerPanel.tgt.resumeThread();
+//				gamePanel.groundPanel.wt.resumeThread();
+//				scorePanel.restartGame();
+//			}
+//		});
+//		tBar.add(startBtn);
+//		
+//		//pauseBtn(게임 중단)
+//		pauseBtn.setFont(btnFont);
+//		pauseBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				timerPanel.tgt.stopFlag();
+//				gamePanel.groundPanel.wt.stopFlag();
+//				scorePanel.pauseGame();
+//			}
+//		});
+//		tBar.add(pauseBtn);
 		
 		//exitBtn(메인 화면 돌아가기)
-		exitBtn.setFont(btnFont);
-		exitBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new StartFrame();
-				setVisible(false);
-			}
-		});
-		tBar.add(exitBtn);
+//		exitBtn.setFont(btnFont);
+//		exitBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				new StartFrame();
+//				setVisible(false);
+//			}
+//		});
+//		tBar.add(exitBtn);
 		
 		muteBtn.setFont(btnFont);
 		muteBtn.addActionListener(new ActionListener() {
@@ -154,7 +186,7 @@ public class GameFrame extends JFrame{
 	}
 	// timerPanel, scorePanel 붙이기
 	private void makeContent() {
-		timerPanel = new TimerPanel(scorePanel, round, level);
+		timerPanel = new TimerPanel(scorePanel, round, level, name);
 		timerPanel.setSize(200, 310);
 		scorePanel.setSize(200, 310);
 		
@@ -198,6 +230,7 @@ public class GameFrame extends JFrame{
 					if(scorePanel.getIndex() == 1) {
 						sleep(1000);
 						scorePanel.setScore();
+						SendMessage("Goal");
 						showGamePanel();
 					}
 					// 경기 종료
@@ -222,11 +255,57 @@ public class GameFrame extends JFrame{
 	}
 	// panel 전환(gamePanel -> shootingPanel)
 	private void showGamePanel() {
-		gamePanel = new GamePanel(scorePanel, round, level);
+		gamePanel = new GamePanel(scorePanel, round, level, name);
 		gamePanel.setSize(600, 600);
 		gamePanel.setLocation(0,30);
 		gamePanel.setBorder(border);
 		getContentPane().add(gamePanel);
 		shootingPanel.setVisible(false);
 	}
+	
+	 class ListenNetwork extends Thread {
+	        public void run() {
+	            while (true) {
+	                try {
+	                    // Use readUTF to read messages
+	                    String msg = dis.readUTF();
+	                    String [] msgToken = msg.split("%"); 
+	                    if(!msgToken[0].equals(name) && msgToken[1].equals("333"))
+	                    	scorePanel.increaseYourGoal(); // 상대 골 넣었을 
+	                    else if(!msgToken[0].equals(name) && msgToken[1].equals("444"))
+	                    	scorePanel.setScoreZero(); // 상대의 공격 - Red Card
+	                    else if(!msgToken[0].equals(name) && msgToken[1].equals("111"))
+	                    	scorePanel.decreaseScore(); // 상대의 공격 - Yellow Card
+	                    
+	                } catch (IOException e) {
+//	                    AppendText("dis.read() error");
+	                    try {
+	                        dos.close();
+	                        dis.close();
+	                        socket.close();
+	                        break;
+	                    } catch (Exception ee) {
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+	    }
+	 public void SendMessage(String msg) {
+	        try {
+	            // Use writeUTF to send messages
+	            dos.writeUTF(name + "%333");
+	            System.out.println("Send");
+	        } catch (IOException e) {
+//	            AppendText("dos.write() error");
+	            try {
+	                dos.close();
+	                dis.close();
+	                socket.close();
+	            } catch (IOException e1) {
+	                e1.printStackTrace();
+	                System.exit(0);
+	            }
+	        }
+	    }
 }

@@ -24,7 +24,7 @@ public class MultiStartFrame extends JFrame {
 	private JTextField userName;
 	public MultiStartFrame(){
 		
-		String[] country={"한국", "브라질", "프랑스", "일본"};
+		String[] country={"Korea", "Brazil", "France", "Japan"};
 		setTitle("로그인");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);

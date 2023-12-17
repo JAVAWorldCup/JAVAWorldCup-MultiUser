@@ -7,12 +7,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 
 public class GamePanel extends JPanel {
 	private JTextField inputField = new JTextField(20);
@@ -32,15 +40,40 @@ public class GamePanel extends JPanel {
 	
 	private int round; // 단계
 	private int level; // 난이도
+	private String name;
 	
-	public GamePanel(ScorePanel scorePanel, int round, int level) {
+	private Socket socket; // 연결소켓
+	private InputStream is;
+	private OutputStream os;
+	private DataInputStream dis;
+	private DataOutputStream dos;
+	private InetAddress ip;
+	final static int ServerPort = 5019;
+	
+	public GamePanel(ScorePanel scorePanel, int round, int level, String name) {
 		sp = scorePanel;
 		this.round = round;
 		this.level = level;
+		this.name = name;
 		setLayout(null); // 배치관리자 제거
 		groundPanel.setSize(600, 530);
 		groundPanel.setLocation(0,0);
 		add(groundPanel);
+		try {
+			ip = InetAddress.getByName("localhost");
+            socket = new Socket(ip, ServerPort);
+            is = socket.getInputStream();
+            dis = new DataInputStream(is);
+            os = socket.getOutputStream();
+            dos = new DataOutputStream(os);
+            
+            SendMessage(name, "0");
+//            ListenNetwork net = new ListenNetwork();
+//            net.start();
+        } catch (NumberFormatException | IOException e) {
+            e.printStackTrace();
+            System.out.println("Socket Not Connected");
+        }
 		
 		// 하단 부 단어 입력 Panel
 		JPanel inputPanel = new JPanel();
@@ -51,7 +84,8 @@ public class GamePanel extends JPanel {
 				JTextField t = (JTextField)e.getSource();
 				// red Card(빨간 글씨) 입력 했을 경우
 				if(t.getText().equals(redCardLabel.getText())) {
-					sp.setScoreZero(); // point 0으로 만들기
+//					sp.setScoreZero(); // point 0으로 만들기
+					SendMessage(name, "444");
 					String word = wordList.getBadWord();
 					redCardLabel.setText(word);
 					Point p = wordVector.get(5);
@@ -59,7 +93,8 @@ public class GamePanel extends JPanel {
 					t.setText("");
 				// yellow Card(노란 글씨) 입력 했을 경우
 				} else if (t.getText().equals(yellowCardLabel.getText())) {
-					sp.decreaseScore(); // point 1 깎기
+//					sp.decreaseScore(); // point 1 깎기
+					SendMessage(name, "111");
 					String word = wordList.getBadWord();
 					yellowCardLabel.setText(word);
 					Point p = wordVector.get(6);
@@ -87,6 +122,7 @@ public class GamePanel extends JPanel {
 							t.setText("");
 						}
 					}
+					t.setText("");
 				}
 			}
 		});
@@ -94,7 +130,23 @@ public class GamePanel extends JPanel {
 		inputPanel.setLocation(0, 530);
 		add(inputPanel);
 	}
-	
+	public void SendMessage(String msg, String code) {
+        try {
+            // Use writeUTF to send messages
+            dos.writeUTF(name + "%" + code);
+            System.out.println("Send");
+        } catch (IOException e) {
+//            AppendText("dos.write() error");
+            try {
+                dos.close();
+                dis.close();
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                System.exit(0);
+            }
+        }
+    }
 	class GroundPanel extends JPanel{
 		public WordThread wt = new WordThread();
 		// 8강전 배경 이미지

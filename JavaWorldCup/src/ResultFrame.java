@@ -23,8 +23,8 @@ public class ResultFrame extends JFrame{
 	
 	private Clip clip;
 	
-	public ResultFrame(boolean result) {
-		super("2022 JAVA World Cup");
+	public ResultFrame(boolean result, String name) {
+		super(name + ": 2022 JAVA World Cup");
 		this.result = result;
 		setContentPane(mp);
 		setLayout(null);
