@@ -33,7 +33,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class WaitingRoom extends JFrame {
+public class WaitingRoomFrame extends JFrame {
 	final static int ServerPort = 5019;   // 포트 번호
 	private MyTableModel model;
 	private int roomNumber;
@@ -50,7 +50,7 @@ public class WaitingRoom extends JFrame {
 	private JTextArea chattingTextArea;
 	private CreateRoomDialog createRoomDialog;
 	private JTable roomTable;
-	public WaitingRoom(Player user) {
+	public WaitingRoomFrame(Player user) {
 		this.user = user;
 		setTitle("방");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,8 +97,6 @@ public class WaitingRoom extends JFrame {
 		contentPane.add(createRoomBtn);
 		
 		if(model==null) model=new MyTableModel(header,0); // 쉘 추가 및 삭제를 할 수 있도록 테이블의 모델을 만듦
-		//String temp1[] = {"123", "제목1aaaa", "aaa", "1/2"};
-		//model.addRow(temp1);
 		
 		JScrollPane roomScrollPane = new JScrollPane();
 		roomScrollPane.setBounds(29, 47, 550, 365);
@@ -141,7 +139,7 @@ public class WaitingRoom extends JFrame {
 				                    	r.roomState[0] = true;
 				                    	userNum = 1;
 				                    }
-									SampleGameFrame gf = new SampleGameFrame(r, user, userNum); //게임 입장
+									RoomFrame gf = new RoomFrame(r, user, userNum); //게임 입장
 									gf.setLocationRelativeTo(null);//프레임 화면 중앙에 오게 하기
 									gf.setVisible(true);
 									dispose();//창을 닫음
@@ -224,8 +222,6 @@ public class WaitingRoom extends JFrame {
 				    		roomMap.put(Integer.parseInt(msgToken[1]), r);
 				        }
 				        else if(msgToken[0].equals("enterToRoom")) {
-				        	//Room temp = roomMap.get(Integer.parseInt(msgToken[1]));
-				        	//temp.setPlayer(new Player(msgToken[2], msgToken[3]), 2); //방에 플레이어2의 정보 추가
 				        	roomTable.setValueAt( "2/2", Integer.parseInt(msgToken[4]), 3); //토큰에서 행정보를 가져와 테이블의 인원 정보를 바꿈
 				        }
 				        else if(msgToken[0].equals("exitFromRoom")) { //메시지가 exitFromRoom이면 방에서 나온 유저가 있음
@@ -239,11 +235,9 @@ public class WaitingRoom extends JFrame {
 				                }
 				            }
 				            if (rowIndex != -1) {// 방 번호를 가진 쉘을 찾았을 때의 처리
-				            	//chattingTextArea.append("ㅕㅕ\n");
 				            	System.out.println("방 번호 " + exitRoomNumber + "을 가진 행을 찾았습니다. 행 인덱스: " + rowIndex + "\n");
 				                
 				            	if(roomTable.getValueAt(rowIndex, 3).equals("1/2")){
-				            		//chattingTextArea.append("방 삭제\n");
 				            		model.removeRow(rowIndex); //모든 인원이 나가면 방을 삭제한다.
 				            		roomMap.remove(Integer.parseInt(exitRoomNumber));
 				            	}
@@ -259,19 +253,12 @@ public class WaitingRoom extends JFrame {
 				            	}
 				            } else { // 방 번호를 가진 쉘을 찾지 못했을 때 오류 처리
 				                System.out.println("방 번호 " + exitRoomNumber + "을 가진 행을 찾지 못했습니다." + "\n");
-				                //chattingTextArea.append("ㅛㅛ\n");
 				            }
 				        }
 				        else {
-				        	//chattingTextArea.append("잘못된 전송");
 				        	System.out.println("잘못된 전송");
 				        }
 					} catch (Exception e) {
-						 /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				            PrintStream ps = new PrintStream(baos);
-				            e.printStackTrace(ps);
-				            String exceptionAsString = baos.toString();
-				            chattingTextArea.append(exceptionAsString);*/
 						e.printStackTrace();
 						break;
 					}
@@ -316,7 +303,7 @@ public class WaitingRoom extends JFrame {
 							os.writeUTF("createRoom%"+s);
 							Room r = new Room(rm, title);
 							r.roomState[0] = true;
-							SampleGameFrame gf = new SampleGameFrame(r, user, 1); //게임 입장
+							RoomFrame gf = new RoomFrame(r, user, 1); //게임 입장
 							gf.setLocationRelativeTo(null);//프레임 화면 중앙에 오게 하기
 							gf.setVisible(true);
 							dispose();//dialog창을 닫음

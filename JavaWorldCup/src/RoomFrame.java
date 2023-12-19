@@ -25,7 +25,7 @@ import javax.swing.Icon;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 
-public class SampleGameFrame extends JFrame {
+public class RoomFrame extends JFrame {
 	final static int ServerPort = 5019;   // 포트 번호
 	DataInputStream is;
 	DataOutputStream os;
@@ -50,7 +50,7 @@ public class SampleGameFrame extends JFrame {
 		put ("France", "./images/newFrance.png");
 		put ("Japan", "./images/japan.png");
 	}};
-	public SampleGameFrame(Room room, Player newPlayer, int userNum) {
+	public RoomFrame(Room room, Player newPlayer, int userNum) {
 		this.room = room;
 		this.userNum = userNum;
 		room.setPlayer(newPlayer, userNum);
@@ -175,7 +175,7 @@ public class SampleGameFrame extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				WaitingRoom wr = new WaitingRoom(room.getPlayer(userNum));//대기실 화면 생성
+				WaitingRoomFrame wr = new WaitingRoomFrame(room.getPlayer(userNum));//대기실 화면 생성
 				wr.setLocationRelativeTo(null);//프레임 화면 중앙에 오게 하기
 				wr.setVisible(true);
 				dispose();
@@ -214,14 +214,9 @@ public class SampleGameFrame extends JFrame {
 				while (true) {//서버로부터 메시지를 받음
 					try {
 						String msg = is.readUTF();      //서버에서 메시지를 받기를 기다림
-						//System.out.println(msg);
 				        String[] msgToken = msg.split("%");// 문자열을 '%'를 기준으로 자르기
-				        //System.out.println(msgToken[0]);
-				        //System.out.println(msgToken[1]);
-				        //System.out.println(room.getRoomNumber());
 				        int temp = 3 - userNum; //현재 유저가 1번이면 상대 플레이어는 2번, 2번이면 1번 
 				        if(msgToken[0].equals("enterToRoom") && Integer.parseInt(msgToken[1])==room.getRoomNumber()) { //방에 들어왔다는 메시지가 나오면 갱신한다.
-				        	//System.out.println("1번");
 				        	room.roomState[temp-1]=true;
 				        	Player newPlayer = new Player(msgToken[2], msgToken[3]);
 				        	room.setPlayer(newPlayer, temp);
@@ -267,12 +262,11 @@ public class SampleGameFrame extends JFrame {
 				        		player2ReadyLabel.setText("");
 				        }
 				        else if(msgToken[0].equals("gameStart") && Integer.parseInt(msgToken[1])==room.getRoomNumber()) {
-//							new GameFrame(8, 1, room.getPlayer(userNum).getName());
 				        	MainThread mt;
 				        	if(room.getMasterNum()==userNum)
-				        		mt = new MainThread(room.getPlayer(1).getName(), room.getPlayer(1).getCountry(), room.getPlayer(2).getName(), room.getPlayer(2).getCountry());
+				        		mt = new MainThread(room, userNum, room.getPlayer(1).getName(), room.getPlayer(1).getCountry(), room.getPlayer(2).getName(), room.getPlayer(2).getCountry());
 				    		else
-				    			mt = new MainThread(room.getPlayer(2).getName(), room.getPlayer(2).getCountry(), room.getPlayer(1).getName(), room.getPlayer(1).getCountry());
+				    			mt = new MainThread(room, userNum, room.getPlayer(2).getName(), room.getPlayer(2).getCountry(), room.getPlayer(1).getName(), room.getPlayer(1).getCountry());
 				        	mt.start();
 							dispose();
 				        }

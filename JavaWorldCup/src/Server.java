@@ -114,7 +114,6 @@ class ServerThread extends Thread {
 			this.os.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			//System.out.println("여기서 오류가 생김");
 		}
 	}
 }
