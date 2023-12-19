@@ -173,9 +173,9 @@ public class WaitingRoom extends JFrame {
 			}
 		});
 		
-		JButton showRankingBtn = new JButton("랭킹");
-		showRankingBtn.setBounds(138, 12, 97, 23);
-		contentPane.add(showRankingBtn);
+//		JButton showRankingBtn = new JButton("랭킹");
+//		showRankingBtn.setBounds(138, 12, 97, 23);
+//		contentPane.add(showRankingBtn);
 		
 		JScrollPane chattingScrollPane = new JScrollPane();
 		chattingScrollPane.setBounds(605, 47, 203, 333);
