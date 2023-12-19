@@ -19,31 +19,41 @@ public class ResultFrame extends JFrame{
 	private MyPanel mp = new MyPanel();
 	private JLabel winLabel = new JLabel("W  I  N");
 	private JLabel loseLabel = new JLabel("L  O  S  E");
-	private boolean result;
+	private JLabel drawLabel = new JLabel("D R A W");
+	private int result;
 	
 	private Clip clip;
 	
-	public ResultFrame(boolean result, String name) {
+	public ResultFrame(int result, String name) {
 		super(name + ": 2022 JAVA World Cup");
 		this.result = result;
 		setContentPane(mp);
 		setLayout(null);
 		winLabel.setFont(new Font("Abalone Smile", Font.BOLD,120));
 		loseLabel.setFont(new Font("Abalone Smile", Font.BOLD,100));
+		drawLabel.setFont(new Font("Abalone Smile", Font.BOLD,100));
 		winLabel.setForeground(Color.ORANGE);
 		loseLabel.setForeground(Color.GRAY);
+		drawLabel.setForeground(Color.gray);
 		winLabel.setSize(400, 200);
 		loseLabel.setSize(400, 200);
+		drawLabel.setSize(400, 200);
 		winLabel.setLocation(220,100);
 		loseLabel.setLocation(200,100);
-		if(result == true) { // win
+		drawLabel.setLocation(200,100);
+		if(result == 0) { // win
 			add(winLabel);
 			loadAudio("media/applaud.wav");
 			clip.start();
 		}
-		else {// lose
+		else if(result == 1){// lose
 			loadAudio("media/lose.wav");
 			add(loseLabel);
+			clip.start();
+		}
+		else {
+			loadAudio("media/lose.wav");
+			add(drawLabel);
 			clip.start();
 		}
 		
@@ -87,7 +97,7 @@ public class ResultFrame extends JFrame{
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(backImg, 0, 0, this.getWidth(), this.getHeight(), null);
-			if(result == true) {
+			if(result == 0) {
 				g.drawImage(winImg1, 80, 400, 100, 200, null);
 				g.drawImage(winImg2, 300, 350, 150, 200, null);
 				g.drawImage(winImg3, 550, 400, 100, 200, null);

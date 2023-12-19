@@ -84,7 +84,7 @@ public class GameFrame extends JFrame{
 	}
 	
 	public boolean getGameState() { return gameState; } 
-	public boolean getGoalState() { return scorePanel.getGoalState();}
+	public int getGoalState() { return scorePanel.getGoalState();} 
 	public int getMyGoal() {return scorePanel.getMyGoal();}
 	
 	private void loadAudio(String pathName) {

@@ -42,21 +42,29 @@ class MainThread extends Thread {
 					start = true; // 게임을 시작했으니 true로 변경
 				}
 				if(gf.getGameState() == true) { // 경기 끝남
-					if(gf.getGoalState()) {
+					if(gf.getGoalState() == 0) { // 승
 						myScore++;
 						System.out.println("Score me: " + myScore + " opponent: "+ opponentScore);
-						rf = new ResultFrame(true, name); // 승
+						round /= 2; // 다음 라운드
+						rf = new ResultFrame(0, name); // 승
+						gf.setVisible(false); // gameFrame 숨기기
+						gf.stopAudio(); // gameFrame 배경음악 끄기
+						sleep(3000); 
+					}
+					else if(gf.getGoalState() == 1){ // 패배
+						opponentScore++;
+						System.out.println("Score me: " + myScore + " opponent: "+ opponentScore);
+						round /= 2; // 다음 라운드
+						rf = new ResultFrame(1, name);
 						gf.setVisible(false); // gameFrame 숨기기
 						gf.stopAudio(); // gameFrame 배경음악 끄기
 						sleep(3000); 
 					}
 					else {
-						opponentScore++;
-						System.out.println("Score me: " + myScore + " opponent: "+ opponentScore);
-						rf = new ResultFrame(false, name);
+						rf = new ResultFrame(2, name);
 						gf.setVisible(false); // gameFrame 숨기기
 						gf.stopAudio(); // gameFrame 배경음악 끄기
-						sleep(3000); 
+						sleep(3000);
 					}
 					if(myScore == 2) {
 						rf.setVisible(false); // 결과 화면 숨기기
@@ -77,7 +85,6 @@ class MainThread extends Thread {
 					else {
 						rf.setVisible(false); // 결과 화면 숨기기
 						rf.stopAudio(); // resultFrame 배경음악 끄기
-						round /= 2; // 다음 라운드
 						vf = new VersusFrame(round, name, country, opponentName, opponentCountry);
 						sleep(3000);
 						gf = new GameFrame(round, level, name);

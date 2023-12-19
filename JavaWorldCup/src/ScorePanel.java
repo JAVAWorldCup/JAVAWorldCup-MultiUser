@@ -124,11 +124,13 @@ public class ScorePanel extends JPanel{
 	public int getIndex() {return index;} // 골이 들어갔는지 안들어 갔는지(index == 1이면 들어감)
 	public void pauseGame() {pause = 1;} // 경기 일시 중지
 	public void restartGame() { pause = 0;} // 경기 재개
-	public boolean getGoalState() {
+	public int getGoalState() {
 		if(myGoal > yourGoal)
-			return true; // 경기 승리
+			return 0; // 경기 승리
+		else if(myGoal < yourGoal)
+			return 1;  // 경기 패배
 		else
-			return false;  // 경기 패배
+			return 2;
 	}
 	public int getMyGoal() {return myGoal;}
 }
