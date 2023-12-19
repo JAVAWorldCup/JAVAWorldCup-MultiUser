@@ -5,6 +5,8 @@ class MainThread extends Thread {
 	private VersusFrame vf;
 	private ResultFrame rf;
 	
+	private Room room;
+	private int userNum;
 	private String name;
 	private String country;
 	private String opponentName;
@@ -17,7 +19,9 @@ class MainThread extends Thread {
 	private int level = 3;
 	private boolean start = false; // 처음 게임을 시작하는지 아닌지 표기(true면 처음이 아님)
 	
-	public MainThread(String name, String country, String opponentName, String opponentCountry) {
+	public MainThread(Room room, int userNum, String name, String country, String opponentName, String opponentCountry) {
+		this.room = room;
+		this.userNum = userNum;
 		this.name = name;
 		this.country = country;
 		this.opponentName = opponentName;
@@ -57,17 +61,17 @@ class MainThread extends Thread {
 					if(myScore == 2) {
 						rf.setVisible(false); // 결과 화면 숨기기
 						rf.stopAudio(); // resultFrame 배경음악 끄기
-						WaitingRoom wr = new WaitingRoom(new Player(name, country));
-						wr.setVisible(true);
-						JOptionPane.showMessageDialog(wr, "You Win!!", name + ": Result", 1); // 이름 입력
+						RoomFrame roomFrame = new RoomFrame(room, room.getPlayer(userNum), userNum);
+						roomFrame.setVisible(true);
+						JOptionPane.showMessageDialog(roomFrame, "You Win!!", name + ": Result", 1); // 이름 입력
 						interrupt(); // 스레드 종료
 					}
 					else if(opponentScore == 2) {
 						rf.setVisible(false); // 결과 화면 숨기기
 						rf.stopAudio(); // resultFrame 배경음악 끄기
-						WaitingRoom wr = new WaitingRoom(new Player(name, country));
-						wr.setVisible(true);
-						JOptionPane.showMessageDialog(wr, "You Lose..", name + ": Result", 1); // 이름 입력
+						RoomFrame roomFrame = new RoomFrame(room, room.getPlayer(userNum), userNum);
+						roomFrame.setVisible(true);
+						JOptionPane.showMessageDialog(roomFrame, "You Lose..", name + ": Result", 1); // 이름 입력
 						interrupt(); // 스레드 종료
 					}
 					else {
