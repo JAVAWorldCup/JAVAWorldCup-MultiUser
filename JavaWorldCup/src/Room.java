@@ -37,7 +37,6 @@ public class Room {
 		this.masterNum = n;
 	}
 	public Room(int roomNumber, String title) {
-		super();
 		this.roomNumber = roomNumber;
 		this.title = title;
 	}

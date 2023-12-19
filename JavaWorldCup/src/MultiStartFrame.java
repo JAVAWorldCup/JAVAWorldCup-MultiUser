@@ -53,7 +53,7 @@ public class MultiStartFrame extends JFrame {
 				name = name.replaceAll("%", "");//%문자를 공백으로 바꿈, 이름 저장시 오류방지
 				if(name.equals("")==false) {//공백이 아니면 게임 시작
 					String myCountry = (String) comboBox.getSelectedItem();
-					WaitingRoom wr = new WaitingRoom(new Player(name, myCountry));
+					WaitingRoomFrame wr = new WaitingRoomFrame(new Player(name, myCountry));
 					wr.setLocationRelativeTo(null);//프레임 화면 중앙에 오게 하기
 					wr.setVisible(true);
 					dispose();//dialog과 메뉴 프레임 창을 닫는다.
